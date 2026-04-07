@@ -1,4 +1,4 @@
-const base = '/api'
+const base = "http://16.16.78.187/api";
 
 export type RoomRow = {
   id: number

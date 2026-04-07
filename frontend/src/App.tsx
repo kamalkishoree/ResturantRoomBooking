@@ -167,6 +167,8 @@ export function App() {
     } catch (e) {
       setErr(e instanceof Error ? e.message : 'Could not sign in.')
     } finally {
+   
+      window.location.reload();
       setAuthBusy(false)
     }
   }
