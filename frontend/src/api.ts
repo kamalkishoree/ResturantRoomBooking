@@ -20,11 +20,11 @@ let token: string | null =
   typeof window !== 'undefined' ? window.localStorage.getItem('riverstone_token') : null
 
 function authHeaders() {
-  return token
-    ? {
-        Authorization: `Bearer ${token}`,
-      }
-    : {}
+  const headers: Record<string, string> = {}
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  }
+  return headers
 }
 
 export function setToken(next: string | null) {
