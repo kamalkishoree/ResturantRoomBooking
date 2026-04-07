@@ -1,4 +1,4 @@
-const base = "http://16.16.90.235/api";
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() || '/api'
 
 export type RoomRow = {
   id: number
@@ -38,7 +38,7 @@ export function setToken(next: string | null) {
 }
 
 export async function currentUser(): Promise<AuthUser | null> {
-  const r = await fetch(`${base}/auth/me`, {
+  const r = await fetch(`${API_BASE_URL}/auth/me`, {
     headers: {
       Accept: 'application/json',
       ...authHeaders(),
@@ -49,7 +49,7 @@ export async function currentUser(): Promise<AuthUser | null> {
 }
 
 export async function register(name: string, phone: string, password: string, email?: string) {
-  const r = await fetch(`${base}/auth/register`, {
+  const r = await fetch(`${API_BASE_URL}/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export async function register(name: string, phone: string, password: string, em
 }
 
 export async function login(phone: string, password: string) {
-  const r = await fetch(`${base}/auth/login`, {
+  const r = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ export async function login(phone: string, password: string) {
 }
 
 export async function logout() {
-  await fetch(`${base}/auth/logout`, {
+  await fetch(`${API_BASE_URL}/auth/logout`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -90,7 +90,7 @@ export async function logout() {
 }
 
 export async function fetchState(): Promise<RoomRow[]> {
-  const r = await fetch(`${base}/hotel/state`, {
+  const r = await fetch(`${API_BASE_URL}/hotel/state`, {
     headers: {
       Accept: 'application/json',
       ...authHeaders(),
@@ -102,7 +102,7 @@ export async function fetchState(): Promise<RoomRow[]> {
 }
 
 export async function bookRooms(count: number) {
-  const r = await fetch(`${base}/hotel/book`, {
+  const r = await fetch(`${API_BASE_URL}/hotel/book`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ export async function bookRooms(count: number) {
 }
 
 export async function bookExact(numbers: number[]) {
-  const r = await fetch(`${base}/hotel/book-exact`, {
+  const r = await fetch(`${API_BASE_URL}/hotel/book-exact`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ export async function bookExact(numbers: number[]) {
 }
 
 export async function randomOccupancy(density?: number) {
-  const r = await fetch(`${base}/hotel/random`, {
+  const r = await fetch(`${API_BASE_URL}/hotel/random`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -152,7 +152,7 @@ export async function randomOccupancy(density?: number) {
 }
 
 export async function resetHotel() {
-  const r = await fetch(`${base}/hotel/reset`, {
+  const r = await fetch(`${API_BASE_URL}/hotel/reset`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',

@@ -90,11 +90,7 @@ export function App() {
   }
 
   const onBook = async () => {
-    if (!user) {
-      setErr('Sign in before placing a hold.')
-      return
-    }
-    if (remainingSlots === 0) {
+    if (user && remainingSlots === 0) {
       setErr('You already have 5 active bookings.')
       return
     }
@@ -103,8 +99,8 @@ export function App() {
     try {
       const useExact = picked.length > 0
       const res = useExact
-        ? await bookExact(picked.slice(0, remainingSlots))
-        : await bookRooms(Math.min(count, remainingSlots))
+        ? await bookExact(user ? picked.slice(0, remainingSlots) : picked.slice(0, 5))
+        : await bookRooms(user ? Math.min(count, remainingSlots) : Math.min(count, 5))
       setLastTrip({
         minutes: res.travel_minutes,
         nums: res.booked.map((b) => b.number),

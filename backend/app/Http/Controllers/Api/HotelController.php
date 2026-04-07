@@ -38,16 +38,19 @@ class HotelController extends Controller
         $data = $request->validate([
             'count' => 'required|integer|min:1|max:5',
         ]);
-        $userId = $request->user()->id;
-        $alreadyBooked = Room::query()
-            ->where('occupied', true)
-            ->where('user_id', $userId)
-            ->count();
-        $remaining = max(0, 5 - $alreadyBooked);
-        if ($remaining === 0) {
-            return response()->json(['message' => 'You already have 5 active bookings.'], 422);
+        $userId = optional($request->user())->id;
+        $k = (int) $data['count'];
+        if ($userId) {
+            $alreadyBooked = Room::query()
+                ->where('occupied', true)
+                ->where('user_id', $userId)
+                ->count();
+            $remaining = max(0, 5 - $alreadyBooked);
+            if ($remaining === 0) {
+                return response()->json(['message' => 'You already have 5 active bookings.'], 422);
+            }
+            $k = min($k, $remaining);
         }
-        $k = min((int) $data['count'], $remaining);
         $available = Room::query()->where('occupied', false)->orderBy('number')->get()->map(function (Room $r) {
             return [
                 'id' => $r->id,
@@ -88,22 +91,24 @@ class HotelController extends Controller
             'numbers.*' => 'integer',
         ]);
 
-        $userId = $request->user()->id;
-        $alreadyBooked = Room::query()
-            ->where('occupied', true)
-            ->where('user_id', $userId)
-            ->count();
-        $remaining = max(0, 5 - $alreadyBooked);
-        if ($remaining === 0) {
-            return response()->json(['message' => 'You already have 5 active bookings.'], 422);
-        }
+        $userId = optional($request->user())->id;
 
         $numbers = array_values(array_unique($data['numbers']));
         if (count($numbers) === 0) {
             return response()->json(['message' => 'No rooms requested.'], 422);
         }
-        if (count($numbers) > $remaining) {
-            return response()->json(['message' => 'You can only book '.$remaining.' more room(s).'], 422);
+        if ($userId) {
+            $alreadyBooked = Room::query()
+                ->where('occupied', true)
+                ->where('user_id', $userId)
+                ->count();
+            $remaining = max(0, 5 - $alreadyBooked);
+            if ($remaining === 0) {
+                return response()->json(['message' => 'You already have 5 active bookings.'], 422);
+            }
+            if (count($numbers) > $remaining) {
+                return response()->json(['message' => 'You can only book '.$remaining.' more room(s).'], 422);
+            }
         }
 
         $rooms = Room::query()
